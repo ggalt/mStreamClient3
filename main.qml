@@ -22,45 +22,75 @@ ApplicationWindow {
     property bool isPortrait: false // (Screen.primaryOrientation === Qt.PortraitOrientation)
     Screen.orientationUpdateMask:  Qt.LandscapeOrientation | Qt.PortraitOrientation
 
-    Page {
-        id: stackWindow
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: isPortrait ? parent.right : nowPlayingWindow.left
+    Item {
+        id: uiWindow
+        anchors.fill: parent
+        Page {
+            id: stackWindow
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: isPortrait ? parent.right : nowPlayingWindow.left
 
-        StackView {
-            id: stackView
-            initialItem: "qrc:/Forms/HomeForm.qml"
-            anchors.fill: parent
-        }
+            StackView {
+                id: stackView
+                initialItem: "qrc:/Forms/HomeForm.qml"
+                anchors.fill: parent
+            }
 
-        Component {
-            id: tabButton
-            TabButton { }
-        }
+            Component {
+                id: tabButton
+                TabButton { }
+            }
 
-        footer: TabBar {
-            id: tabBar
-            currentIndex: 0
+            footer: TabBar {
+                id: tabBar
+                currentIndex: 0
 
-            TabButton {
-                text: qsTr("Home")
-                onClicked: {
-                    console.log(stackView.depth)
+                TabButton {
+                    text: qsTr("Home")
+                    onClicked: {
+                        console.log(stackView.depth)
+                    }
                 }
             }
+
         }
 
-    }
+        Rectangle {
+            id: nowPlayingWindow
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            visible: !isPortrait
+            width: isPortrait ? parent.width : parent.width / 2
+        }
 
-    Rectangle {
-        id: nowPlayingWindow
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        visible: !isPortrait
-        width: isPortrait ? parent.width : parent.width / 2
+        states: [
+            State {
+                name: "Portrait"
+                PropertyChanges {
+                    target: stackWindow
+                    anchors.right: parent.right
+                }
+                PropertyChanges {
+                    target: nowPlayingWindow
+                    visible: false
+                }
+            },
+            State {
+                name: "Landscape"
+                PropertyChanges {
+                    target: nowPlayingWindow
+                    width: parent.width / 2
+                    visible: true
+                }
+                PropertyChanges {
+                    target: stackWindow
+                    anchors.right: nowPlayingWindow.left
+                }
+            }
+        ]
     }
 
     header: ToolBar {
@@ -161,7 +191,7 @@ ApplicationWindow {
     /////////////////////////////////////////////////////////////////////////////////
 
     property string myToken: ""
-//    property string serverURL: mainWindow.getServerURL()
+    //    property string serverURL: mainWindow.getServerURL()
 
     property int gettingArtists: 0
     property int gettingAlbums: 0
@@ -182,12 +212,13 @@ ApplicationWindow {
 
     property string apiVersion: "/api/v1"
 
+
     /////////////////////////////////////////////////////////////////////////////////
     /// Functions
     /////////////////////////////////////////////////////////////////////////////////
 
     function orientationUpdate() {
-//        isPortrait = true // (Screen.primaryOrientation === Qt.PortraitOrientation)
+        //        isPortrait = true // (Screen.primaryOrientation === Qt.PortraitOrientation)
         if( Qt.platform.os === "ios" || Qt.platform.os === "android")   {   // mobile platforms, assume full screen
             appWindow.width = Screen.width
             appWindow.height = Screen.height
@@ -299,24 +330,26 @@ ApplicationWindow {
         myLogger.log("artistRequestResp:", xmlhttp.responseText)
         artistListJSONModel.json = xmlhttp.responseText
         artistListJSONModel.query = "$.artists[*]"
-//        mainWindow.setMainWindowState("NowPlaying")
-//        mainWindow.listStackView.push( "qrc:/Forms/ArtistListForm.qml" )
+        stackView.push("qrc:/Forms/ArtistListForm.qml")
+        
+        //        mainWindow.setMainWindowState("NowPlaying")
+        //        mainWindow.listStackView.push( "qrc:/Forms/ArtistListForm.qml" )
     }
 
     function albumRequestResp(xmlhttp) {
         myLogger.log("albumRequestResp:", xmlhttp.responseText.substring(1,5000))
         albumListJSONModel.json = xmlhttp.responseText
         albumListJSONModel.query = "$.albums[*]"
-//        mainWindow.setMainWindowState("NowPlaying")
-//        mainWindow.listStackView.push( "qrc:/Forms/AlbumListForm.qml" )
+        //        mainWindow.setMainWindowState("NowPlaying")
+        //        mainWindow.listStackView.push( "qrc:/Forms/AlbumListForm.qml" )
     }
 
     function playListRequestResp(xmlhttp) {
         myLogger.log("playListRequestResp:", xmlhttp.responseText.substring(1,5000))
         playListJSONModel.json = xmlhttp.responseText
-//        playListJSONModel.query = "$.albums[*]"
-//        mainWindow.setMainWindowState("NowPlaying")
-//        mainWindow.listStackView.push( "qrc:/Forms/PlayListForm.qml" )
+        //        playListJSONModel.query = "$.albums[*]"
+        //        mainWindow.setMainWindowState("NowPlaying")
+        //        mainWindow.listStackView.push( "qrc:/Forms/PlayListForm.qml" )
     }
 
     function playlistSongListRequestResponse(xmlhttp) {
@@ -325,7 +358,7 @@ ApplicationWindow {
 
     function songRequestResp(xmlhttp) {
         songListJSONModel.json = xmlhttp.responseText
-//        mainWindow.listStackView.push( "qrc:/Forms/SongListForm.qml" )
+        //        mainWindow.listStackView.push( "qrc:/Forms/SongListForm.qml" )
     }
 
     function actionClick(action) {
@@ -435,8 +468,11 @@ ApplicationWindow {
     }
 
     function setGlobalVolume(vol) {
-//        mainWindow.mediaVolume = vol
+        //        mainWindow.mediaVolume = vol
     }
 
+    /////////////////////////////////////////////////////////////////////////////////
+    /// States
+    /////////////////////////////////////////////////////////////////////////////////
 
 }
