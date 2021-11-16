@@ -5,6 +5,8 @@ import QtQml 2.15
 import Qt.labs.settings 1.1
 import QtMultimedia 5.15
 import "resourceElements"
+import "Forms"
+import "images"
 
 ApplicationWindow {
     id: appWindow
@@ -22,75 +24,16 @@ ApplicationWindow {
     property bool isPortrait: false // (Screen.primaryOrientation === Qt.PortraitOrientation)
     Screen.orientationUpdateMask:  Qt.LandscapeOrientation | Qt.PortraitOrientation
 
-    Item {
-        id: uiWindow
+    MainWindowForm {
+        id: mainWindow
+        objectName: "mainWindow"
         anchors.fill: parent
-        Page {
-            id: stackWindow
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: isPortrait ? parent.right : nowPlayingWindow.left
 
-            StackView {
-                id: stackView
-                initialItem: "qrc:/Forms/HomeForm.qml"
-                anchors.fill: parent
-            }
-
-            Component {
-                id: tabButton
-                TabButton { }
-            }
-
-            footer: TabBar {
-                id: tabBar
-                currentIndex: 0
-
-                TabButton {
-                    text: qsTr("Home")
-                    onClicked: {
-                        console.log(stackView.depth)
-                    }
-                }
-            }
-
+        Component.onCompleted: {
+            if(  getSetupState() )
+                sendLogin()
         }
 
-        Rectangle {
-            id: nowPlayingWindow
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            visible: !isPortrait
-            width: isPortrait ? parent.width : parent.width / 2
-        }
-
-        states: [
-            State {
-                name: "Portrait"
-                PropertyChanges {
-                    target: stackWindow
-                    anchors.right: parent.right
-                }
-                PropertyChanges {
-                    target: nowPlayingWindow
-                    visible: false
-                }
-            },
-            State {
-                name: "Landscape"
-                PropertyChanges {
-                    target: nowPlayingWindow
-                    width: parent.width / 2
-                    visible: true
-                }
-                PropertyChanges {
-                    target: stackWindow
-                    anchors.right: nowPlayingWindow.left
-                }
-            }
-        ]
     }
 
     header: ToolBar {
@@ -119,33 +62,41 @@ ApplicationWindow {
         }
     }
 
-
-
     Drawer {
         id: drawer
         width: appWindow.width * 0.66
         height: appWindow.height
 
-        Column {
+        SettingsForm {
+            id: settingsForm
             anchors.fill: parent
-
-            ItemDelegate {
-                text: qsTr("Page 1")
-                width: parent.width
-                onClicked: {
-                    stackView.push("Page1Form.ui.qml")
-                    drawer.close()
-                }
-            }
-            ItemDelegate {
-                text: qsTr("Page 2")
-                width: parent.width
-                onClicked: {
-                    stackView.push("Page2Form.ui.qml")
-                    drawer.close()
-                }
-            }
+            drawerHeight: appWindow.height
+            drawerWidth: appWindow.width
+            //        property alias appSettings: _appSettings
         }
+
+    }
+
+    Settings {
+        id: appSettings
+
+        property string setUserName: ""
+        property string setPassword: ""
+        property string setServerURL: ""
+        property string setServerPort: ""
+        property string setFullServerURL: ""
+        property real setMediaVolume
+        property bool setIsSetup
+        property bool setUseLoginCredentials
+        property real basePointSize
+    }
+
+    LoginFailureDialog {
+        id: loginFailureDialog
+        visible: false
+        modal: true
+        x: appWindow.width / 2 - loginFailureDialog.width / 2
+        y: appWindow.height / 2 - loginFailureDialog.height / 2
     }
 
     Screen.onOrientationUpdateMaskChanged: {
@@ -154,6 +105,8 @@ ApplicationWindow {
 
     Component.onCompleted: {
         orientationUpdate()
+//        if( !getSetupState() )
+            drawer.open()
     }
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +144,7 @@ ApplicationWindow {
     /////////////////////////////////////////////////////////////////////////////////
 
     property string myToken: ""
-    //    property string serverURL: mainWindow.getServerURL()
+    property string serverURL: getServerURL()
 
     property int gettingArtists: 0
     property int gettingAlbums: 0
@@ -203,7 +156,7 @@ ApplicationWindow {
     property bool hasPlayListLoaded: false
     property int playlistAddAt: 0
 
-    property int globalDebugLevel: 0        // 0 = critical, 1 = warn, 2 = all
+    property int globalDebugLevel: 2        // 0 = critical, 1 = warn, 2 = all
 
     property var poppedItems: []
 
@@ -216,6 +169,30 @@ ApplicationWindow {
     /////////////////////////////////////////////////////////////////////////////////
     /// Functions
     /////////////////////////////////////////////////////////////////////////////////
+    function getServerURL() {
+        return appSettings.setFullServerURL
+    }
+
+    function getUserName() {
+        return appSettings.setUserName
+    }
+
+    function getPassWord() {
+        return appSettings.setPassword
+    }
+
+    function getToken() {
+        return appWindow.myToken
+    }
+
+    function getSetupState() {
+        return appSettings.setIsSetup
+    }
+
+    function getTextPointSize() {
+        return (2*appSettings.basePointSize) / 3
+    }
+
 
     function orientationUpdate() {
         //        isPortrait = true // (Screen.primaryOrientation === Qt.PortraitOrientation)
@@ -232,9 +209,9 @@ ApplicationWindow {
             }
         }
 
-        nowPlayingWindow.width = isPortrait ? appWindow.width : appWindow.width / 2
-        nowPlayingWindow.visible = !isPortrait
-        stackWindow.anchors.right = isPortrait ? appWindow.right : nowPlayingWindow.left
+//        nowPlayingWindow.width = isPortrait ? appWindow.width : appWindow.width / 2
+//        nowPlayingWindow.visible = !isPortrait
+//        stackWindow.anchors.right = isPortrait ? appWindow.right : nowPlayingWindow.left
     }
     function sendLogin() {
         var xmlhttp = new XMLHttpRequest();
@@ -245,7 +222,7 @@ ApplicationWindow {
         xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xmlhttp.setRequestHeader("datatype", "json");
 
-        var jsString = JSON.stringify({ username: mainWindow.getUserName(), password: mainWindow.getPassWord() })
+        var jsString = JSON.stringify({ username: getUserName(), password: getPassWord() })
         myLogger.log("LOGIN STRING:", jsString)
 
         xmlhttp.send(jsString);
@@ -468,7 +445,7 @@ ApplicationWindow {
     }
 
     function setGlobalVolume(vol) {
-        //        mainWindow.mediaVolume = vol
+        mediaVolume = vol
     }
 
     /////////////////////////////////////////////////////////////////////////////////

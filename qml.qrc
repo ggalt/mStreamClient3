@@ -78,5 +78,6 @@
         <file>resourceElements/ScrollingTextWindow.qml</file>
         <file>resourceElements/ToggleButton.qml</file>
         <file>resourceElements/VolumeControl.qml</file>
+        <file>Forms/MainWindowForm.qml</file>
     </qresource>
 </RCC>
