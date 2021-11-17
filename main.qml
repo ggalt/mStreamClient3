@@ -307,7 +307,7 @@ ApplicationWindow {
         myLogger.log("artistRequestResp:", xmlhttp.responseText)
         artistListJSONModel.json = xmlhttp.responseText
         artistListJSONModel.query = "$.artists[*]"
-        stackView.push("qrc:/Forms/ArtistListForm.qml")
+        mainWindow.pushForm("qrc:/Forms/ArtistListForm.qml", "Artist")
         
         //        mainWindow.setMainWindowState("NowPlaying")
         //        mainWindow.listStackView.push( "qrc:/Forms/ArtistListForm.qml" )
