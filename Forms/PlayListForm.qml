@@ -17,7 +17,7 @@ ScrollingListView {
         debugLevel: appWindow.globalDebugLevel
     }
 
-    myDelegate: DraggableListDelegate {
+    myDelegate: ActionListDelegate {
         id: playlistDelegate
         objectName: "playlistDelegate"
         property variant myData: model
@@ -29,7 +29,7 @@ ScrollingListView {
         actionCommand: "load"
         actionItem: model.name
         delegateLabel.text: model.name
-        textPointSize:  mainWindow.getTextPointSize()
+        textPointSize:  appWindow.getTextPointSize()
 
         delegateMouseArea.onClicked: {
             ListView.view.currentIndex=index

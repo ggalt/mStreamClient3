@@ -17,7 +17,7 @@ ScrollingListView {
         debugLevel: appWindow.globalDebugLevel
     }
 
-    myDelegate: DraggableListDelegate {
+    myDelegate: ActionListDelegate {
         id: songDelegate
         objectName: "songDelegate"
         property variant myData: model
@@ -30,8 +30,8 @@ ScrollingListView {
         actionCommand: "song"
         actionItem: '{"filepath":"'+model.filepath +'", "metadata":'+JSON.stringify(model.metadata)+'}'
         delegateLabel.text: model.metadata.track+" - "+model.metadata.title
-        delegateImage.source: model.metadata["album-art"]!==null ? mainWindow.getServerURL()+"/album-art/"+model.metadata["album-art"]+"?token="+mainWindow.getToken() : "../images/music_default2.png"
-        textPointSize:  mainWindow.getTextPointSize()
+        delegateImage.source: model.metadata["album-art"]!==null ? appWindow.getServerURL()+"/album-art/"+model.metadata["album-art"]+"?token="+appWindow.getToken() : "../images/music_default2.png"
+        textPointSize:  appWindow.getTextPointSize()
 
         delegateMouseArea.onClicked: {
             ListView.view.currentIndex=index

@@ -39,7 +39,7 @@ Rectangle {
         appSettings.setServerPort = txtPortNumber.text
         getFullURL()
         appSettings.setIsSetup = true
-        //        appSettings.basePointSize = pointSizeSlider.value
+        appSettings.basePointSize = pointSizeSlider.value
         myLogger.log(appSettings.setServerURL, appSettings.setServerPort, appSettings.setUserName, appSettings.setPassword )
         console.log(appSettings.setServerURL, appSettings.setServerPort, appSettings.setUserName, appSettings.setPassword )
         //        mainWindow.setMainWindowState("ListChooserWindow")
@@ -85,7 +85,7 @@ Rectangle {
                 cursorVisible: true
                 background: Rectangle {
                     anchors.fill: parent
-                    color: "#8e8e8e"
+                    color: Style.darkGray
                 }
             }
 
@@ -112,7 +112,7 @@ Rectangle {
                 cursorVisible: true
                 background: Rectangle {
                     anchors.fill: parent
-                    color: "#8e8e8e"
+                    color: Style.darkGray
                 }
             }
         }
@@ -139,7 +139,7 @@ Rectangle {
                 cursorVisible: true
                 background: Rectangle {
                     anchors.fill: parent
-                    color: "#8e8e8e"
+                    color: Style.darkGray
                 }
             }
         }
@@ -163,7 +163,7 @@ Rectangle {
                 cursorVisible: true
                 background: Rectangle {
                     anchors.fill: parent
-                    color: "#8e8e8e"
+                    color: Style.darkGray
                 }
             }
         }

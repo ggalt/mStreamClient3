@@ -5,6 +5,7 @@ import "../resourceElements"
 ScrollingListView {
     id: albumPage
     objectName: "albumPage"
+    property string quearyString
 
     formName: "Album List"
     myModel: albumListJSONModel.model
@@ -17,10 +18,13 @@ ScrollingListView {
         debugLevel: appWindow.globalDebugLevel
     }
 
-    myDelegate: DraggableListDelegate {
+    myDelegate: ActionListDelegate {
         id: albumDelegate
         objectName: "albumDelegate"
         property variant myData: model
+
+        delegateBackgroundColor: Style.white
+        delegatePressedColor: Style.teal
 
         height: 87
         width: albumPage.width
@@ -29,14 +33,25 @@ ScrollingListView {
         actionCommand: "album"
         actionItem: model.name
         delegateLabel.text: model.name
-        delegateImage.source: mainWindow.getServerURL()+"/album-art/"+model.album_art_file+"?token="+mainWindow.getToken()
-        textPointSize:  mainWindow.getTextPointSize()
+        delegateImage.source: appWindow.getServerURL()+"/album-art/"+model.album_art_file+"?token="+appWindow.getToken()
+        textPointSize:  appWindow.getTextPointSize()
 
         delegateMouseArea.onClicked: {
-            ListView.view.currentIndex=index
+//            artistDelegate.ListView.view.currentIndex=index
             myLogger.log("click for:", actionItem)
-            mainApp.requestAlbumSongs(actionItem)
+            appWindow.requestAlbumSongs(actionItem)
         }
+
+        delegateMouseArea.onPressAndHold: {
+            myLogger.log("adding to playlist", actionItem)
+            appWindow.updatePlaylist(actionItem, actionCommand, "add")
+        }
+
+//        delegateMouseArea.onClicked: {
+//            ListView.view.currentIndex=index
+//            myLogger.log("click for:", actionItem)
+//            mainApp.requestAlbumSongs(actionItem)
+//        }
 
     }
 

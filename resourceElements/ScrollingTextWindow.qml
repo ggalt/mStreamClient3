@@ -7,7 +7,7 @@ Rectangle {
     clip: true
 
     property int scrollSpeed: 6000  // 6 seconds of scrolling
-    property int scrollInterval: 8000   // 5 seconds of static text
+    property int scrollInterval: 8000   // 8 seconds of static text
     property int fadeOutSpeed: 1000
     property int fadeInSpeed: 200
     property int scrollStep: 0
@@ -20,6 +20,7 @@ Rectangle {
     property alias scrollFontPointSize: scrollingText.font.pointSize
     property alias scrollTextColor: scrollingText.color
     property alias scrollTextOpacity: scrollingText.opacity
+    property alias backgroundColor: _textRectangle.color
 
     state: "Static"
 
@@ -75,11 +76,14 @@ Rectangle {
     }
 
     Rectangle {
+        id: _textRectangle
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.top: parent.top
         anchors.leftMargin: 10
+//        color: Style.blue
+
         clip: true
         Text {
             id: scrollingText
@@ -90,6 +94,7 @@ Rectangle {
             onTextChanged: setupScrolling()
             text: "test text"
             horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
             font.pointSize: 20
             opacity: 1.0
         }

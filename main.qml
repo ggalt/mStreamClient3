@@ -39,7 +39,7 @@ ApplicationWindow {
     header: ToolBar {
         id: toolBar
         contentHeight: toolButton.implicitHeight
-        property int textPointSize: 20 // mainWindow.getTextPointSize()
+        property int textPointSize: appWindow.getTextPointSize()
 
         ToolButton {
             id: toolButton
@@ -58,7 +58,10 @@ ApplicationWindow {
             anchors.bottom: parent.bottom
             anchors.right: parent.right
             scrollFontPointSize: toolBar.textPointSize
-            scrollText: "mStream Client"
+            scrollText: "mStream ClientmStream ClientmStream ClientmStream ClientmStream ClientmStream ClientmStream ClientmStream ClientmStream ClientmStream ClientmStream ClientmStream ClientmStream ClientmStream ClientmStream Client"
+            scrollTextColor: Style.white
+            backgroundColor: Style.blue
+            color: Style.blue
         }
     }
 
@@ -105,7 +108,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         orientationUpdate()
-//        if( !getSetupState() )
+        if( !getSetupState() )
             drawer.open()
     }
 
@@ -139,6 +142,48 @@ ApplicationWindow {
         debugLevel: appWindow.globalDebugLevel
     }
 
+    Component {
+        id: artistListForm
+        ArtistListForm {
+
+        }
+    }
+
+    Component {
+        id: albumListForm
+        AlbumListForm {
+
+        }
+    }
+
+    Component {
+        id: playListForm    // this is the list of playlists from server, NOT currently playlist on client
+        PlayListForm {
+
+        }
+    }
+
+    Component {
+        id: songListForm
+        SongListForm {
+
+        }
+    }
+
+    Component {
+        id: currentPlayListForm
+        CurrentPlayListForm {
+
+        }
+    }
+
+    Component {
+        id: nowPlayingForm
+        NowPlayingForm {
+
+        }
+    }
+
     /////////////////////////////////////////////////////////////////////////////////
     /// Data Elements
     /////////////////////////////////////////////////////////////////////////////////
@@ -157,8 +202,6 @@ ApplicationWindow {
     property int playlistAddAt: 0
 
     property int globalDebugLevel: 2        // 0 = critical, 1 = warn, 2 = all
-
-    property var poppedItems: []
 
     property alias currentPlayList: _currentPlayList
     property alias toolBarLabel: _toolBarLabel
@@ -307,26 +350,21 @@ ApplicationWindow {
         myLogger.log("artistRequestResp:", xmlhttp.responseText)
         artistListJSONModel.json = xmlhttp.responseText
         artistListJSONModel.query = "$.artists[*]"
-        mainWindow.pushForm("qrc:/Forms/ArtistListForm.qml", "Artist")
-        
-        //        mainWindow.setMainWindowState("NowPlaying")
-        //        mainWindow.listStackView.push( "qrc:/Forms/ArtistListForm.qml" )
+        mainWindow.pushForm( artistListForm, "Artist")
     }
 
     function albumRequestResp(xmlhttp) {
         myLogger.log("albumRequestResp:", xmlhttp.responseText.substring(1,5000))
         albumListJSONModel.json = xmlhttp.responseText
         albumListJSONModel.query = "$.albums[*]"
-        //        mainWindow.setMainWindowState("NowPlaying")
-        //        mainWindow.listStackView.push( "qrc:/Forms/AlbumListForm.qml" )
+        mainWindow.pushForm(albumListForm, "Albums" )
     }
 
     function playListRequestResp(xmlhttp) {
         myLogger.log("playListRequestResp:", xmlhttp.responseText.substring(1,5000))
         playListJSONModel.json = xmlhttp.responseText
         //        playListJSONModel.query = "$.albums[*]"
-        //        mainWindow.setMainWindowState("NowPlaying")
-        //        mainWindow.listStackView.push( "qrc:/Forms/PlayListForm.qml" )
+        mainWindow.pushForm(playListForm, "Playlists")
     }
 
     function playlistSongListRequestResponse(xmlhttp) {
@@ -340,7 +378,7 @@ ApplicationWindow {
 
     function actionClick(action) {
         // if we have moved back up the stack, clear the list
-        appWindow.poppedItems = []
+//        appWindow.poppedItems = []
 
         if(action === "Artists") {
             myLogger.log("Artist Click")
@@ -382,8 +420,9 @@ ApplicationWindow {
         if( gettingArtists <= 0 && gettingAlbums <= 0 && gettingTitles <= 0) {
             myLogger.log("loading playlist whch has length of:", _currentPlayList.count)
             isPlaying = true
-            mainWindow.listStackView.push("qrc:/Forms/CurrentPlayListForm.qml")
-            mainWindow.nowPlayingForm.mediaPlayer.startPlaylist()
+            mainWindow.pushForm(currentPlayListForm, "Current Playlist")
+//            mainWindow.listStackView.push("qrc:/Forms/CurrentPlayListForm.qml")
+//            mainWindow.nowPlayingForm.mediaPlayer.startPlaylist()
         }
     }
 

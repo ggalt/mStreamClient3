@@ -5,7 +5,7 @@ import "../resourceElements"
 ScrollingListView {
     id: artistPage
     objectName: "artistPage"
-//    anchors.fill: parent
+    property string quearyString
 
     formName: "Artist List"
     myModel: artistListJSONModel.model
@@ -20,10 +20,13 @@ ScrollingListView {
         debugLevel: appWindow.globalDebugLevel
     }
 
-    myDelegate: DraggableListDelegate {
+    myDelegate: ActionListDelegate {
         id: artistDelegate
         objectName: "artistDelegate"
         property variant myData: model
+
+        delegateBackgroundColor: Style.white
+        delegatePressedColor: Style.teal
 
         height: 42
         width: artistPage.width
@@ -32,12 +35,16 @@ ScrollingListView {
         actionCommand: "artist"
         actionItem: model.name
         delegateLabel.text: model.name
-        textPointSize:  mainWindow.getTextPointSize()
+        textPointSize:  appWindow.getTextPointSize()
 
         delegateMouseArea.onClicked: {
             artistDelegate.ListView.view.currentIndex=index
             myLogger.log("click for:", actionItem)
-            mainApp.requestArtistAlbums(actionItem)
+            appWindow.requestArtistAlbums(actionItem)
+        }
+
+        delegateMouseArea.onPressAndHold: {
+            myLogger.log("adding to playlist", actionItem)
         }
     }
 }

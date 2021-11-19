@@ -9,6 +9,9 @@ import "../resourceElements"
 
 Item {
     anchors.fill: parent
+
+    property var poppedItems: []
+
     Page {
         id: stackWindow
         anchors.top: parent.top
@@ -16,10 +19,12 @@ Item {
         anchors.left: parent.left
         anchors.right: isPortrait ? parent.right : nowPlayingWindow.left
 
-        StackView {
+        SwipeView {
+//        StackView {
             id: stackView
-//            initialItem: "qrc:/Forms/HomeForm.qml"
             anchors.fill: parent
+            currentIndex: tabBar.currentIndex
+            onCurrentItemChanged: tabBar.currentIndex = currentIndex
         }
 
         Component {
@@ -32,17 +37,18 @@ Item {
 
         footer: TabBar {
             id: tabBar
-//            currentIndex: 0
-
-//            TabButton {
-//                text: qsTr("Home")
-//                onClicked: {
-//                    console.log(stackView.depth)
-//                }
-//            }
         }
+
+        Component {
+            id: homeForm
+            HomeForm {
+
+            }
+        }
+
         Component.onCompleted: {
-            pushForm("qrc:/Forms/HomeForm.qml", "Home")
+            myLogger.log("pushing home form")
+            pushForm(homeForm, "Home")
         }
     }
 
@@ -56,14 +62,31 @@ Item {
     }
 
     function pushForm( formName, tabName ) {
+        myLogger.log("pushing form:", formName.objectName, tabName)
+        myLogger.log("Stack current index:", stackView.currentIndex)
+        myLogger.log("Stack current depth:", stackView.count)
+
+        if( stackView.count -1 > stackView.currentIndex) {    // we have tabs to the left, so get rid of them
+            myLogger.log("Removing stack view card.", stackView.count, stackView.currentIndex)
+
+            for( var i = stackView.count -1; i > stackView.currentIndex; i-- ) {
+                myLogger.log(i, stackView.currentIndex, tabBar.currentIndex)
+                stackView.removeItem( stackView.itemAt(i) )
+                tabBar.removeItem( tabBar.itemAt(i) )
+            }
+        }
+
+        var form = formName.createObject(stackView)
+        stackView.addItem(form)
+
         var tabCount = tabBar.count
-        stackView.push( formName )
         var tab = tabButton.createObject(tabBar, { text: tabName, stackIndexValue: tabCount })
         tabBar.addItem(tab)
+        tabBar.currentIndex=tabCount
     }
 
     function tabClicked( tabName, indexValue ) {
-        console.log(tabName, indexValue)
+        myLogger.log("Tab Clicked:", indexValue, tabName, stackView.count, tabBar.currentIndex)
     }
 
     function setState( newstate ) {
@@ -95,4 +118,12 @@ Item {
             }
         }
     ]
+
+    Logger {
+        id:myLogger
+        moduleName: parent.objectName
+        debugLevel: appWindow.globalDebugLevel
+    }
+
+
 }

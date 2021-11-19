@@ -65,7 +65,7 @@
         <file>images/turntable-297877_640.png</file>
         <file>resourceElements/ColorProgressBar.qml</file>
         <file>resourceElements/ColorSlider.qml</file>
-        <file>resourceElements/DraggableListDelegate.qml</file>
+        <file>resourceElements/ActionListDelegate.qml</file>
         <file>resourceElements/HoverButton.qml</file>
         <file>resourceElements/ImageButton.qml</file>
         <file>resourceElements/JSONListModel.qml</file>
@@ -79,5 +79,7 @@
         <file>resourceElements/ToggleButton.qml</file>
         <file>resourceElements/VolumeControl.qml</file>
         <file>Forms/MainWindowForm.qml</file>
+        <file>resourceElements/Style.qml</file>
+        <file>resourceElements/qmldir</file>
     </qresource>
 </RCC>

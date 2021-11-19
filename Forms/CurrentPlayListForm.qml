@@ -27,64 +27,48 @@ ScrollingListView {
         debugLevel: appWindow.globalDebugLevel
     }
 
-    myDelegate: SwipeDelegate {
+    myDelegate: ActionListDelegate {
         id: playlistDelegate
         height: 87
         width: currentPlaylistForm.width
-        background: Rectangle {
-            color: "transparent"
+
+        delegateBackgroundColor: Style.white
+        delegatePressedColor: Style.teal
+
+        clip: true
+        hasImage: true
+//        actionCommand: "album"
+//        actionItem: model.name
+        delegateLabel.text: model.metadata.track+" - "+model.metadata.title
+        delegateImage.source: model.metadata["album-art"]!==null ? appWindow.getServerURL()+"/album-art/"+model.metadata["album-art"]+"?token="+appWindow.getToken() : "../images/music_default2.png"
+        textPointSize:  appWindow.getTextPointSize()
+
+        delegateMouseArea.onClicked: {
+                        playlistDelegate.ListView.view.currentIndex=index
+                        appWindow.currentPlayList.setCurrentTrack(index)
         }
 
-        onPressed: listDelegateRect.color = "lightgrey"
-        onReleased: listDelegateRect.color = "#80808080"
-
-        onClicked: {
-            playlistDelegate.ListView.view.currentIndex=index
-            appWindow.currentPlayList.setCurrentTrack(index)
-            myLogger.log("click for:", listDelegateRect.delegateLabel.text)
+        delegateMouseArea.onPressAndHold: {
+            myLogger.log("adding to playlist", actionItem)
+//            appWindow.updatePlaylist(actionItem, actionCommand, "add")
         }
 
-        swipe.right: Label {
-            id: removeLabel
-            text: qsTr("Remove Track")
-            color: "white"
-            verticalAlignment: Label.AlignVCenter
-            padding: 12
-            height: parent.height
-            anchors.right: parent.right
+//        onClicked: {
+//            playlistDelegate.ListView.view.currentIndex=index
+//            appWindow.currentPlayList.setCurrentTrack(index)
+//            myLogger.log("click for:", listDelegateRect.delegateLabel.text)
+//        }
 
-//            SwipeDelegate.onClicked: {
-//                myLogger.log("remove track", listDelegateRect.height, playlistDelegate.height)
-//                swipe.close()
-//            }
+//        swipe.right: Label {
+//            id: removeLabel
+//            text: qsTr("Remove Track")
+//            color: "white"
+//            verticalAlignment: Label.AlignVCenter
+//            padding: 12
+//            height: parent.height
+//            anchors.right: parent.right
 
-            background: Rectangle {
-                color: removeLabel.SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        myLogger.log("remove track", listDelegateRect.height, playlistDelegate.height)
-                        swipe.close()
-                    }
-                }
-            }
-        }
-
-        contentItem: ListDelegateRect {
-            id: listDelegateRect
-            x: 0
-            width: parent.width
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.topMargin: 1
-            anchors.bottomMargin: 1
-            color: "#80808080"
-            clip: true
-            hasImage: true
-            delegateLabel.text: model.metadata.track+" - "+model.metadata.title
-            delegateImage.source: model.metadata["album-art"]!==null ? mainWindow.getServerURL()+"/album-art/"+model.metadata["album-art"]+"?token="+mainWindow.getToken() : "../images/music_default2.png"
-            textPointSize:  mainWindow.getTextPointSize()
-        }
+//        }
     }
 
     Component {
