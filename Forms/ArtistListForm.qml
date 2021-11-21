@@ -5,7 +5,8 @@ import "../resourceElements"
 ScrollingListView {
     id: artistPage
     objectName: "artistPage"
-    property string quearyString
+    property string quearyString0
+    property bool pressedAndHeld: false
 
     formName: "Artist List"
     myModel: artistListJSONModel.model
@@ -45,6 +46,16 @@ ScrollingListView {
 
         delegateMouseArea.onPressAndHold: {
             myLogger.log("adding to playlist", actionItem)
+            pressedAndHeld = true
         }
+
+        delegateMouseArea.onReleased: {
+            if( pressedAndHeld ) {
+                pressedAndHeld = false
+                myLogger.log("pressedAndHeld is now:", pressedAndHeld )
+                appWindow.updatePlaylist(actionItem, actionCommand, "add")
+            }
+        }
+
     }
 }

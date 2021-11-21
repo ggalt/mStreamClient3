@@ -74,24 +74,10 @@ ScrollingListView {
     Component {
         id: highlight
         Rectangle {
-            gradient: Gradient {
-                GradientStop {
-                    position: 0
-                    color: "#4d808000"
-                }
-
-                GradientStop {
-                    position: 0.5
-                    color: "#66ffff00"
-                }
-
-                GradientStop {
-                    position: 1
-                    color: "#4d808000"
-                }
-            }
+            color: Style.teal
+            opacity: 0.30
             border.width: 2
-            border.color: "yellow"
+            border.color: Style.darkTeal
             y: currentPlaylistForm.myCurrentItem.y
             Behavior on y {
                 SpringAnimation {

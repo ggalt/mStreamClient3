@@ -178,7 +178,7 @@ ApplicationWindow {
     }
 
     Component {
-        id: nowPlayingForm
+        id: nowPlayingFormCard
         NowPlayingForm {
 
         }
@@ -256,6 +256,7 @@ ApplicationWindow {
 //        nowPlayingWindow.visible = !isPortrait
 //        stackWindow.anchors.right = isPortrait ? appWindow.right : nowPlayingWindow.left
     }
+
     function sendLogin() {
         var xmlhttp = new XMLHttpRequest();
         var url = serverURL+apiVersion+"/auth/login";
@@ -421,6 +422,10 @@ ApplicationWindow {
             myLogger.log("loading playlist whch has length of:", _currentPlayList.count)
             isPlaying = true
             mainWindow.pushForm(currentPlayListForm, "Current Playlist")
+            if( isPortrait ) {
+                mainWindow.pushForm(nowPlayingFormCard, "Player")
+            }
+
 //            mainWindow.listStackView.push("qrc:/Forms/CurrentPlayListForm.qml")
 //            mainWindow.nowPlayingForm.mediaPlayer.startPlaylist()
         }

@@ -75,6 +75,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             visible: true
+            color: Style.darkGrayBlue
 
             state: "inactive"
 

@@ -17,7 +17,8 @@ Item {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: parent.left
-        anchors.right: isPortrait ? parent.right : nowPlayingWindow.left
+        anchors.right: appWindow.isPortrait ? parent.right : nowPlayingWindow.left
+        clip: true
 
         SwipeView {
 //        StackView {
@@ -52,14 +53,21 @@ Item {
         }
     }
 
-    Rectangle {
+    NowPlayingForm {
         id: nowPlayingWindow
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        visible: !isPortrait
-        width: isPortrait ? parent.width : parent.width / 2
+//        anchors.left: appWindow.isPortrait ? parent.left : stackWindow.right
+        visible: !appWindow.isPortrait
+        width: appWindow.isPortrait ? parent.width : parent.width / 2
     }
+
+    function holdReleased() {
+        myLogger.log("stackView and tabBar indexes:", stackView.currentIndex, tabBar.currentIndex)
+//        stackView.currentIndex = tabBar.currentIndex
+    }
+
 
     function pushForm( formName, tabName ) {
         myLogger.log("pushing form:", formName.objectName, tabName)
@@ -83,6 +91,7 @@ Item {
         var tab = tabButton.createObject(tabBar, { text: tabName, stackIndexValue: tabCount })
         tabBar.addItem(tab)
         tabBar.currentIndex=tabCount
+        myLogger.log("window width", stackWindow.width)
     }
 
     function tabClicked( tabName, indexValue ) {
