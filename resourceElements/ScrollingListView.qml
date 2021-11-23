@@ -62,6 +62,7 @@ Rectangle {
         onContentYChanged: {
             lblLetter.state = "active"
             scrollTimer.start()
+            appWindow.resetFlipTimer()
         }
 
         Label {

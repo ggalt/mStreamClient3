@@ -9,7 +9,6 @@ import "../resourceElements"
 import "../images"
 
 Item {
-    id: item1
     objectName: "nowPlayingForm"
 
     width: 400
@@ -60,7 +59,10 @@ Item {
         MouseArea {
             id: imageMouseArea
             anchors.centerIn: parent
-            onClicked: nowPlayingForm.imageClicked()
+            onClicked: {
+                appWindow.setFlipableState(false)
+                nowPlayingForm.imageClicked()
+            }
         }
 
         onStatusChanged: {
@@ -269,6 +271,7 @@ Item {
             else
                 currentPlayList.setCurrentTrack(0)  // make sure we are at the beginning
             appWindow.hasPlayListLoaded = true
+            appWindow.setFlipableState(true)
             // setting the current track will call startNewTrack()
         }
 

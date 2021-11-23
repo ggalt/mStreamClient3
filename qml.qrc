@@ -81,5 +81,6 @@
         <file>Forms/MainWindowForm.qml</file>
         <file>resourceElements/Style.qml</file>
         <file>resourceElements/qmldir</file>
+        <file>resourceElements/PlayListDelegateHighlight.qml</file>
     </qresource>
 </RCC>

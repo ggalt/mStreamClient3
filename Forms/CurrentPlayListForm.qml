@@ -37,8 +37,6 @@ ScrollingListView {
 
         clip: true
         hasImage: true
-//        actionCommand: "album"
-//        actionItem: model.name
         delegateLabel.text: model.metadata.track+" - "+model.metadata.title
         delegateImage.source: model.metadata["album-art"]!==null ? appWindow.getServerURL()+"/album-art/"+model.metadata["album-art"]+"?token="+appWindow.getToken() : "../images/music_default2.png"
         textPointSize:  appWindow.getTextPointSize()
@@ -50,35 +48,30 @@ ScrollingListView {
 
         delegateMouseArea.onPressAndHold: {
             myLogger.log("adding to playlist", actionItem)
-//            appWindow.updatePlaylist(actionItem, actionCommand, "add")
         }
 
-//        onClicked: {
-//            playlistDelegate.ListView.view.currentIndex=index
-//            appWindow.currentPlayList.setCurrentTrack(index)
-//            myLogger.log("click for:", listDelegateRect.delegateLabel.text)
-//        }
-
-//        swipe.right: Label {
-//            id: removeLabel
-//            text: qsTr("Remove Track")
-//            color: "white"
-//            verticalAlignment: Label.AlignVCenter
-//            padding: 12
-//            height: parent.height
-//            anchors.right: parent.right
-
-//        }
     }
 
     Component {
         id: highlight
         Rectangle {
-            color: Style.teal
-            opacity: 0.30
-            border.width: 2
+            id: rectangle
+            color: Style.clear
+            radius: 10
+            border.width: 5
             border.color: Style.darkTeal
             y: currentPlaylistForm.myCurrentItem.y
+
+            Text {
+                id: text1
+                color: Style.darkTeal
+                text: "\u140A"
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.right: parent.right
+                font.pixelSize: 20
+                font.weight: Font.Bold
+            }
+
             Behavior on y {
                 SpringAnimation {
                     spring: 3

@@ -38,7 +38,6 @@ ScrollingListView {
         textPointSize:  appWindow.getTextPointSize()
 
         delegateMouseArea.onClicked: {
-//            artistDelegate.ListView.view.currentIndex=index
             myLogger.log("click for:", actionItem)
             appWindow.requestAlbumSongs(actionItem)
         }
@@ -52,16 +51,13 @@ ScrollingListView {
             if( pressedAndHeld ) {
                 pressedAndHeld = false
                 myLogger.log("pressedAndHeld is now:", pressedAndHeld )
-                appWindow.updatePlaylist(actionItem, actionCommand, "add")
+                if(mouse.button === Qt.RightButton) {
+                    appWindow.updatePlaylist(actionItem, actionCommand, "replace")
+                } else {
+                    appWindow.updatePlaylist(actionItem, actionCommand, "add")
+                }
             }
         }
-
-//        delegateMouseArea.onClicked: {
-//            ListView.view.currentIndex=index
-//            myLogger.log("click for:", actionItem)
-//            mainApp.requestAlbumSongs(actionItem)
-//        }
-
     }
 
 }

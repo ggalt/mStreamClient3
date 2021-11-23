@@ -69,6 +69,7 @@ Rectangle {
 
         onPressed: {
             _delegateRect.color=delegatePressedColor
+            appWindow.resetFlipTimer()
             myLogger.log("pressed")
         }
         onReleased: {

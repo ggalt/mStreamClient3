@@ -12,9 +12,6 @@ ScrollingListView {
     myModel: artistListJSONModel.model
     highlightLetter: myCurrentItem.myData.name[0]
 
-//    property color delegateBackground: "#80808080"
-//    property color delegatePressed: "lightgrey"
-
     Logger {
         id:myLogger
         moduleName: parent.objectName
@@ -40,7 +37,6 @@ ScrollingListView {
 
         delegateMouseArea.onClicked: {
             artistDelegate.ListView.view.currentIndex=index
-            myLogger.log("click for:", actionItem)
             appWindow.requestArtistAlbums(actionItem)
         }
 
@@ -53,7 +49,11 @@ ScrollingListView {
             if( pressedAndHeld ) {
                 pressedAndHeld = false
                 myLogger.log("pressedAndHeld is now:", pressedAndHeld )
-                appWindow.updatePlaylist(actionItem, actionCommand, "add")
+                if(mouse.button === Qt.RightButton) {
+                    appWindow.updatePlaylist(actionItem, actionCommand, "replace")
+                } else {
+                    appWindow.updatePlaylist(actionItem, actionCommand, "add")
+                }
             }
         }
 

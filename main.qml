@@ -21,7 +21,7 @@ ApplicationWindow {
     /// Visible Items
     /////////////////////////////////////////////////////////////////////////////////
 
-    property bool isPortrait: false // (Screen.primaryOrientation === Qt.PortraitOrientation)
+    property bool isPortrait: true // (Screen.primaryOrientation === Qt.PortraitOrientation)
     Screen.orientationUpdateMask:  Qt.LandscapeOrientation | Qt.PortraitOrientation
 
     MainWindowForm {
@@ -30,6 +30,8 @@ ApplicationWindow {
         anchors.fill: parent
 
         Component.onCompleted: {
+            appWindow.setFlipableState.connect(mainWindow.setFlippedState)
+            appWindow.resetFlipTimer.connect(mainWindow.restartFlipTimer)
             if(  getSetupState() )
                 sendLogin()
         }
@@ -178,7 +180,7 @@ ApplicationWindow {
     }
 
     Component {
-        id: nowPlayingFormCard
+        id: nowPlayingForm
         NowPlayingForm {
 
         }
@@ -207,6 +209,11 @@ ApplicationWindow {
     property alias toolBarLabel: _toolBarLabel
 
     property string apiVersion: "/api/v1"
+
+    property alias _nowPlayingForm: nowPlayingForm
+
+    signal setFlipableState( var state )
+    signal resetFlipTimer()
 
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -422,12 +429,9 @@ ApplicationWindow {
             myLogger.log("loading playlist whch has length of:", _currentPlayList.count)
             isPlaying = true
             mainWindow.pushForm(currentPlayListForm, "Current Playlist")
-            if( isPortrait ) {
-                mainWindow.pushForm(nowPlayingFormCard, "Player")
-            }
-
 //            mainWindow.listStackView.push("qrc:/Forms/CurrentPlayListForm.qml")
 //            mainWindow.nowPlayingForm.mediaPlayer.startPlaylist()
+            mainWindow.nowPlayingForm.mediaPlayer.startPlaylist()
         }
     }
 
