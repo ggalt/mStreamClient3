@@ -21,7 +21,7 @@ ApplicationWindow {
     /// Visible Items
     /////////////////////////////////////////////////////////////////////////////////
 
-    property bool isPortrait: true // (Screen.primaryOrientation === Qt.PortraitOrientation)
+    property bool isPortrait: false // (Screen.primaryOrientation === Qt.PortraitOrientation)
     Screen.orientationUpdateMask:  Qt.LandscapeOrientation | Qt.PortraitOrientation
 
     MainWindowForm {
